@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shop_app/modules/login/login.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -43,9 +44,25 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        actions: [
+          TextButton(onPressed: (){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LoginScreen()));
+          }, child: Text('Skip',style: TextStyle(
+            color: Colors.teal,
+            fontSize: 16.0,
+          ),))
+        ],
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.all(0.0),
         child: Column(
           children: [
             Expanded(
@@ -63,32 +80,40 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 },
                 controller: boardController,
                 physics: BouncingScrollPhysics() ,
-                itemBuilder: (context, index)=>buildoardingItem(boarding[index]),
+                itemBuilder: (context, index)=>Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  child: buildoardingItem(boarding[index]),
+                ),
                 itemCount: boarding.length,
               ),
             ),
             SizedBox(height: 40.0,),
-            Row(
-              children: [
-                SmoothPageIndicator(controller: boardController, count: boarding.length, effect: ExpandingDotsEffect(
-                  dotColor: Colors.grey,
-                  dotHeight: 10.0,
-                  expansionFactor: 4.0,
-                  dotWidth: 10.0,
-                  spacing: 5.0,
-                ),),
-                Spacer(),
-                FloatingActionButton(onPressed: (){
+            Padding(
+              padding: const EdgeInsets.only(left: 30.0,right: 30.0,bottom: 30.0),
+              child: Row(
+                children: [
+                  SmoothPageIndicator(controller: boardController, count: boarding.length, effect: ExpandingDotsEffect(
+                    dotColor: Colors.grey,
+                    activeDotColor: Colors.teal,
+                    dotHeight: 10.0,
+                    expansionFactor: 4.0,
+                    dotWidth: 10.0,
+                    spacing: 5.0,
+                  ),),
+                  Spacer(),
+                  FloatingActionButton(onPressed: (){
 
-                  if(islast){
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-                  } else{
-                    boardController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.fastLinearToSlowEaseIn,);
-                  }
-                },
-                child: Icon(Icons.arrow_forward_ios),
-                )
-              ],
+                    if(islast){
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                    } else{
+                      boardController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn,);
+                    }
+                  },
+                    backgroundColor: Colors.teal,
+                  child: Icon(Icons.arrow_forward_ios),
+                  )
+                ],
+              ),
             )
 
           ],
