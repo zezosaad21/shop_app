@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shop_app/modules/login/login.dart';
+import 'package:shop_app/shared/local/chach_helper.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class BoardingModel{
@@ -41,8 +42,22 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   bool islast = false;
 
+  void submit(){
+
+    CacheHelper.saveData(key: 'onBoarding', value: true).then((value){
+      if(value){
+        Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context)=> LoginScreen(),),);
+      }
+    });
+
+
+  }
+
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -53,9 +68,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         backgroundColor: Colors.white,
         elevation: 0.0,
         actions: [
-          TextButton(onPressed: (){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LoginScreen()));
-          }, child: Text('Skip',style: TextStyle(
+          TextButton(onPressed:submit,
+              child: Text('Skip',style: TextStyle(
             color: Colors.teal,
             fontSize: 16.0,
           ),))
@@ -104,7 +118,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   FloatingActionButton(onPressed: (){
 
                     if(islast){
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                      submit();
                     } else{
                       boardController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn,);
                     }

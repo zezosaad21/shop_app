@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/modules/login/login.dart';
+import 'package:shop_app/shared/local/chach_helper.dart';
 
 class ShopAppLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Salla'),
+      ),
+      body: TextButton(onPressed: () {
+        CacheHelper.clearData(key: 'token').then((value){
+          if(value){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LoginScreen()));
+          }
+        });
+
+      }, child: Text('LOgout'),),
+    );
   }
 }

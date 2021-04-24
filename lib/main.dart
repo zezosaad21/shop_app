@@ -1,15 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_app/layout/shop_app_layout.dart';
 import 'package:shop_app/modules/inbording_screen.dart';
 import 'package:shop_app/modules/login/cubit/login_cubit.dart';
+import 'package:shop_app/modules/login/login.dart';
+import 'package:shop_app/shared/local/chach_helper.dart';
 import 'package:shop_app/shared/remot/dio_helper.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   DioHelper.init();
-  runApp(MyApp());
+  await CacheHelper.init();
+
+  Widget widget;
+
+
+  bool isOnBoarding = CacheHelper.getData(key: 'onBoarding');
+  String token = CacheHelper.getData(key: 'token');
+
+  if(isOnBoarding != null){
+    if(token != null) widget = ShopAppLayout();
+    else widget = LoginScreen();
+  } else {
+    widget = OnBoardingScreen();
+  }
+
+
+  runApp(MyApp(startingWidget: widget,));
 }
 
 class MyApp extends StatelessWidget {
+  final Widget startingWidget;
+
+  const MyApp({this.startingWidget});
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -28,7 +51,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Janna',
           primarySwatch: Colors.blue,
         ),
-        home: OnBoardingScreen(),
+        home: startingWidget,
       ),
     );
   }
