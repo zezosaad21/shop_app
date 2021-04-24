@@ -18,6 +18,8 @@ dependencies:
   bloc:
   flutter_bloc:
   smooth_page_indicator: ^0.2.3
+  dio:
+  conditional_builder: ^1.0.2
 
 dev_dependencies:
   flutter_test:
