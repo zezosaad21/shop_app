@@ -18,7 +18,13 @@ class DioHelper {
   static Future<Response> postData({
     @required String url,
     @required Map<String, dynamic> data,
+    String lang,
   }) async {
+
+    dio.options.headers = {
+      'lang' : 'ar',
+
+    };
     return await dio.post(
       url,
       data: data,
