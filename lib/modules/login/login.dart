@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shop_app/layout/shop_app_layout.dart';
 import 'package:shop_app/modules/login/cubit/login_cubit.dart';
 import 'package:shop_app/modules/register/register_screen.dart';
+import 'package:shop_app/shared/components/components.dart';
+import 'package:shop_app/shared/local/chach_helper.dart';
 
 class LoginScreen extends StatelessWidget {
   var emailController = TextEditingController();
@@ -14,8 +20,24 @@ class LoginScreen extends StatelessWidget {
     var formKey = GlobalKey<FormState>();
     return BlocProvider(
         create: (context) => LoginCubit(),
-        child: BlocConsumer<LoginCubit, LoginState>(listener: (context, state) {
-          
+        child: BlocConsumer<LoginCubit, LoginState>(
+            listener: (context, state) {
+              if (state is LoginSuccessState){
+                if(state.loginModel.status){
+
+                  CacheHelper.saveData(key: 'token', value: state.loginModel.data.token,).then((value){
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ShopAppLayout()));
+                  });
+
+                } else{
+
+                  showToast(text: state.loginModel.message,
+                    state: ToastStates.ERROR,
+                  );
+
+                }
+              }
+
         }, builder: (context, state) {
           return Scaffold(
             backgroundColor: Colors.white,
@@ -65,8 +87,18 @@ class LoginScreen extends StatelessWidget {
                         height: 20.0,
                       ),
                       TextFormField(
+                        obscureText: LoginCubit.get(context).isPassword,
+                        onFieldSubmitted: (value){
+                          if(formKey.currentState.validate()){
+                            LoginCubit.get(context).userLogin(
+                              email: emailController.text,
+                              password: passwordController.text,
+                            );
+                          }
+                        },
                         controller: passwordController,
                         keyboardType: TextInputType.visiblePassword,
+
                         validator: (String value) {
                           if (value.isEmpty) {
                             return 'the password is not empty';
@@ -75,11 +107,22 @@ class LoginScreen extends StatelessWidget {
                           }
                           return null;
                         },
+
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Password',
                             prefixIcon: Icon(Icons.lock_open_rounded),
-                            suffixIcon: Icon(Icons.visibility_outlined)),
+                            suffixIcon: IconButton(
+                              icon: Icon(LoginCubit.get(context).suffixButton),
+                              onPressed: (){
+                                LoginCubit.get(context).changePasswordVisibility();
+                              },
+                            ),
+
+
+
+                        ),
+
                       ),
                       // ElevatedButton(
                       //

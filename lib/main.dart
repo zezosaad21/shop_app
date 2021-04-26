@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_app/layout/cubit/shop_layout_cubit.dart';
 import 'package:shop_app/layout/shop_app_layout.dart';
 import 'package:shop_app/modules/inbording_screen.dart';
 import 'package:shop_app/modules/login/cubit/login_cubit.dart';
 import 'package:shop_app/modules/login/login.dart';
+import 'package:shop_app/shared/components/constant.dart';
 import 'package:shop_app/shared/local/chach_helper.dart';
 import 'package:shop_app/shared/remot/dio_helper.dart';
 
@@ -14,19 +16,21 @@ void main() async {
 
   Widget widget;
 
-
   bool isOnBoarding = CacheHelper.getData(key: 'onBoarding');
-  String token = CacheHelper.getData(key: 'token');
+  token = CacheHelper.getData(key: 'token');
 
-  if(isOnBoarding != null){
-    if(token != null) widget = ShopAppLayout();
-    else widget = LoginScreen();
+  if (isOnBoarding != null) {
+    if (token != null)
+      widget = ShopAppLayout();
+    else
+      widget = LoginScreen();
   } else {
     widget = OnBoardingScreen();
   }
 
-
-  runApp(MyApp(startingWidget: widget,));
+  runApp(MyApp(
+    startingWidget: widget,
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -36,8 +40,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<LoginCubit>(
-      create: (context) => LoginCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<LoginCubit>(
+          create: (context) => LoginCubit(),
+        ),
+        BlocProvider<ShopLayoutCubit>(
+          create: (context) => ShopLayoutCubit()..getHomeData(),
+        ),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
